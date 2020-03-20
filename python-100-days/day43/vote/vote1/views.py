@@ -99,8 +99,8 @@ def export_teachers_excel(request):
     wb=xlwt.Workbook()
     # 添加工作表
     sheet=wb.add_sheet('老师信息表')
-    # 查询所有老师的信息
-    queryset=Teacher.objects.all()
+    # 查询所有老师的信息,使用QuerySet的用select_related()方法来加载关联对象
+    queryset=Teacher.objects.all().select_related('subject')
     # 向excel表单中写入表头
     colnames=('姓名', '介绍', '好评数', '差评数', '学科')
     for index,name in enumerate(colnames):
@@ -112,7 +112,6 @@ def export_teachers_excel(request):
             value=getattr(teacher,prop,'')
             if isinstance(value,Subject):
                 value=value.name
-                print(value)
             sheet.write(row+1,col,value)
     # 保存excel
     buffer=BytesIO()
@@ -129,7 +128,8 @@ def echarts(request):
     return render(request,'teachers_data.html')
 # 查询所有老师的信息
 def get_teachers_data(request):
-    queryset=Teacher.objects.all()
+    # 用QuerySet的only()方法来指定需要查询的属性
+    queryset=Teacher.objects.all().only('name','good_count','bad_count')
     # 用生成式将老师的名字放在一个列表中
     names=[teacher.name for teacher in queryset]
     good=[teacher.good_count for teacher in queryset]
