@@ -23,4 +23,7 @@ urlpatterns = [
     path('teachers/',views.show_teachers),
     path('praise/',views.prise_or_criticize),
     path('criticize/',views.prise_or_criticize),
+    path('register/',views.register,name='register'),
+    path('login/',views.login,name='login'),
+    path('captcha/',views.get_captcha,name='get_captcha')
 ]
