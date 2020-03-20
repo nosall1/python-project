@@ -1,4 +1,4 @@
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse, HttpResponse, HttpRequest
 from django.shortcuts import render, redirect
 from vote1.models import Subject,Teacher,User
 from vote1.form import RegisterForm,LoginForm
@@ -36,18 +36,27 @@ def prise_or_criticize(request):
     return JsonResponse(data)
 
 # 登录
-def login(request):
+def login(request:HttpRequest):
     hint=''
     if request.method=='POST':
         form=LoginForm(request.POST)
         if form.is_valid():
-            username=form.cleaned_data['username']
-            password=form.cleaned_data['password']
-            user=User.objects.filter(username=username,password=password).first()
-            if user:
-                return redirect('/')
+            # 对验证码的正确性进行验证
+            captcha_from_user=form.cleaned_data['captcha']
+            captcha_from_sess=request.session.get('captcha','')
+            if captcha_from_sess.lower()!=captcha_from_user.lower():
+                hint='请输入正确的验证码'
             else:
-                hint='用户名或密码错误'
+                username=form.cleaned_data['username']
+                password=form.cleaned_data['password']
+                user=User.objects.filter(username=username,password=password).first()
+                if user:
+                    # 登录成功后将用户编号和用户名保存在session中
+                    request.session['userid']=user.no
+                    request.session['username']=user.username
+                    return redirect('/')
+                else:
+                    hint='用户名或密码错误'
         else:
             hint='请输入有效的登录信息'
     return render(request,'login.html',{'hint':hint})
@@ -73,5 +82,10 @@ def get_captcha_text(length=4):
 # 获取验证码
 def get_captcha(request):
     captcha_text=get_captcha_text()
+    request.session['captcha']=captcha_text
     image=Captcha.instance().generate(captcha_text)
     return HttpResponse(image,content_type='image/png')
+# 注销
+def logout(request):
+    request.session.flush()
+    return redirect('/')

@@ -25,5 +25,6 @@ urlpatterns = [
     path('criticize/',views.prise_or_criticize),
     path('register/',views.register,name='register'),
     path('login/',views.login,name='login'),
-    path('captcha/',views.get_captcha,name='get_captcha')
+    path('captcha/',views.get_captcha,name='get_captcha'),
+    path('logout/',views.logout,name='logout')
 ]
