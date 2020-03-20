@@ -26,5 +26,8 @@ urlpatterns = [
     path('register/',views.register,name='register'),
     path('login/',views.login,name='login'),
     path('captcha/',views.get_captcha,name='get_captcha'),
-    path('logout/',views.logout,name='logout')
+    path('logout/',views.logout,name='logout'),
+    path('excel/',views.export_teachers_excel),
+    path('echarts/',views.echarts),
+    path('teachers_data/',views.get_teachers_data)
 ]

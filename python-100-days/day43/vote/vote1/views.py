@@ -1,3 +1,7 @@
+from io import BytesIO
+
+import xlwt
+from django.contrib.admin.utils import quote
 from django.http import JsonResponse, HttpResponse, HttpRequest
 from django.shortcuts import render, redirect
 from vote1.models import Subject,Teacher,User
@@ -89,3 +93,45 @@ def get_captcha(request):
 def logout(request):
     request.session.flush()
     return redirect('/')
+
+# 创建工作薄
+def export_teachers_excel(request):
+    wb=xlwt.Workbook()
+    # 添加工作表
+    sheet=wb.add_sheet('老师信息表')
+    # 查询所有老师的信息
+    queryset=Teacher.objects.all()
+    # 向excel表单中写入表头
+    colnames=('姓名', '介绍', '好评数', '差评数', '学科')
+    for index,name in enumerate(colnames):
+        sheet.write(0,index,name)
+    # 向单元格中写入老师的数据
+    props=('name','detail','good_count','bad_count','subject')
+    for row,teacher in enumerate(queryset):
+        for col,prop in enumerate(props):
+            value=getattr(teacher,prop,'')
+            if isinstance(value,Subject):
+                value=value.name
+                print(value)
+            sheet.write(row+1,col,value)
+    # 保存excel
+    buffer=BytesIO()
+    wb.save(buffer)
+    # 将二进制数据写入响应的消息体中并设置MIME类型
+    resp=HttpResponse(buffer.getvalue(),content_type='application/vnd.ms-excel')
+    # 中文文件名需要处理成百分号编码
+    filename=quote('11.xls')
+    # 通过响应头告知浏览器下载该文件以及对应的文件名
+    resp['content-disposition'] = f'attachment; filename="{filename}"'
+    return resp
+
+def echarts(request):
+    return render(request,'teachers_data.html')
+# 查询所有老师的信息
+def get_teachers_data(request):
+    queryset=Teacher.objects.all()
+    # 用生成式将老师的名字放在一个列表中
+    names=[teacher.name for teacher in queryset]
+    good=[teacher.good_count for teacher in queryset]
+    bad=[teacher.bad_count for teacher in queryset]
+    return JsonResponse({'names':names,'good':good,'bad':bad})
