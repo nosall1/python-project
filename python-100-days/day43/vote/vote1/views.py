@@ -24,19 +24,22 @@ def show_teachers(request):
     except(KeyError,ValueError,Subject.DoesNotExist):
         return redirect('/')
 
-# 好评
+# 投票
 def prise_or_criticize(request):
-    try:
-        tno=int(request.GET['tno'])
-        teacher=Teacher.objects.get(no=tno)
-        if request.path.startswith('/praise'):
-            teacher.good_count+=1
-        else:
-            teacher.bad_count+=1
-        teacher.save()
-        data={'code':200,'hint':'操作成功'}
-    except(KeyError,ValueError,Teacher.DoseNotExist):
-        data={'code':404,'hint':'操作失败'}
+    if 'username' in request.session:
+        try:
+            tno=int(request.GET['tno'])
+            teacher=Teacher.objects.get(no=tno)
+            if request.path.startswith('/praise'):
+                teacher.good_count+=1
+            else:
+                teacher.bad_count+=1
+            teacher.save()
+            data={'code':200,'hint':'操作成功'}
+        except(KeyError,ValueError,Teacher.DoseNotExist):
+            data={'code':404,'hint':'操作失败'}
+    else:
+        data={'code':401,'message':'请先登录'}
     return JsonResponse(data)
 
 # 登录
