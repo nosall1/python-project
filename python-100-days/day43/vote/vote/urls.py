@@ -22,7 +22,8 @@ from vote1 import views
 
 
 urlpatterns = [
-    path('',views.show_subjects),
+    path('', views.index),
+    path('subjects/',views.show_subjects),
     path('admin/', admin.site.urls),
     path('teachers/',views.show_teachers),
     path('praise/',views.prise_or_criticize),

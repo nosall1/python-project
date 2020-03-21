@@ -1,6 +1,7 @@
 from io import BytesIO
 
 import xlwt
+from bpmappers import RawField
 from django.contrib.admin.utils import quote
 from django.http import JsonResponse, HttpResponse, HttpRequest
 from django.shortcuts import render, redirect
@@ -9,11 +10,29 @@ from vote1.form import RegisterForm,LoginForm
 import random
 from vote1.create_captcha import Captcha
 # Create your views here.
+from bpmappers.djangomodel import ModelMapper
+class SubjectMapper(ModelMapper):
+    isHot = RawField('is_hot')
+
+    class Meta:
+        model = Subject
+        exclude = ('create_date', 'is_hot')
+
+def index(request):
+    return render(request,'subject.html')
 # 查看所有学科
 def show_subjects(request):
-    subjects=Subject.objects.all()
-    return render(request,'subject.html',{'subjects':subjects})
-
+    queryset = Subject.objects.all()
+    subjects = []
+    for subject in queryset:
+        subjects.append({
+            'no': subject.no,
+            'name': subject.name,
+            'intro': subject.intro,
+            'isHot': subject.is_hot
+        })
+    print(subjects)
+    return JsonResponse(subjects,safe=False)
 # 显示指定学科的信息
 def show_teachers(request):
     try:
