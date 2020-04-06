@@ -14,7 +14,7 @@ class Appcase(models.Model):
         return self.appcasename
 
 class Appcasestep(models.Model):
-    Appcse=models.ForeignKey(Appcase,on_delete=models.CASCADE)
+    Appcase=models.ForeignKey(Appcase,on_delete=models.CASCADE)
     appteststep=models.CharField('测试步骤',max_length=200)
     apptestobjname=models.CharField('测试对象名称描述',max_length=200)
     appfindmethod=models.CharField('定位方式',max_length=200)
