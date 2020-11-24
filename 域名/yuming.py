@@ -150,7 +150,9 @@ def query_yuming(name):
 
 if __name__ == '__main__':
     ps=Pool(1)
-    ps.apply_async(queryZimu,(5,))
+    # 从字母列表中随机取两个
+    # ps.apply_async(queryHanzi,(2,))
+    ps.apply_async(queryZimu,(4,))
     # p1=multiprocessing.Process(target=queryHanzi,args=(3,))
     # p2 = multiprocessing.Process(target=queryHanzi, args=(2,))
     # p3=multiprocessing.Process(target=queryZiAndNum,args=(4,))

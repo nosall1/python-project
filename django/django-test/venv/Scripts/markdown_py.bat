@@ -1,0 +1,1 @@
+@"d:\tqcourse\project\pythonproject\django\venv\scripts\python.exe" "d:\tqcourse\project\pythonproject\django\venv\Scripts\markdown_py" %*
