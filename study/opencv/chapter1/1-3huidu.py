@@ -1,6 +1,5 @@
 #-*- coding:utf-8 -*-
 """
- Createed by xielijiang on 2017/9/8
  对图像添加人工的椒盐现象
 """
 import cv2

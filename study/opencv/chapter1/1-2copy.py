@@ -1,6 +1,5 @@
 #-*- coding:utf-8 -*-
 """
- Createed by xielijiang on 2017/9/8
 """
 import cv2
 import numpy as np
