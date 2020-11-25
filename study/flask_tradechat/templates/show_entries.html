@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+{% extends "layout.html" %}
+{% block body %}
+    {% if session.logged_in%}
+    <form action="{{ url_for('add_entry')}}" method="post" class="add-comment">
+        <dl>
+            <dd>What's up?</dd>
+            <dd><textarea name="text" rows="3" cols="40"></textarea> </dd>
+            <dd><input type="submit" value="Post"></dd>
+        </dl>
+    </form>
+    {%endif%}
+<ul class="comments">
+    {% for comment in comments%}
+    <li>{{comment.comment|safe}}
+        <font size="-2">({{comment.user}}@{{comment.time}})</font>
+    </li>
+    {% else%}
+    <li><em>No comments so far.</em></li>
+    {%endfor%}
+</ul>
+{% endblock %}}
