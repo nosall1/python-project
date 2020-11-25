@@ -1,0 +1,29 @@
+根据实验楼的实验项目编写此项目
+具体地址见：https://www.shiyanlou.com/courses/623/labs/2072/document
+上面的程序中我们运行程序的方式是这样的：
+
+python3 tickets.py from to date
+我们当然可以将脚本改成可执行的，然后这样执行：
+
+./tickets.py from to date
+但这也不是理想的方案，因为我们必须在脚本的目录下才能运行。我们想要的是在命令行的任何地方都可以这样运行：
+
+ticktes from to date
+这是可以实现的，我们需要借助 Python 的 SETUP 工具。写一个简单的 setup 脚本：
+
+from setuptools import setup
+
+setup(
+    name='tickets',
+    py_modules=['tickets', 'stations'],
+    install_requires=['requests', 'docopt', 'prettytable', 'colorama'],
+    entry_points={
+        'console_scripts': ['tickets=tickets:cli']
+    }
+)
+在命令行运行一下：
+
+python3 setup.py install
+
+最终使用如下命令查询：
+tickets 成都 南京 2017-10-10
